@@ -1,27 +1,37 @@
 ﻿using System.Net.Http.Json;
 using System.Net.Mime;
 using System.Text.Json;
-
 HttpClient httpClient = new HttpClient();
+async void  AddClient(Client client)
+{
+    JsonContent content = JsonContent.Create(client);
+    content.Headers.Add("table", "client");
+    using var response = await httpClient.PostAsync("http://127.0.0.1:8888/connection/", content);
+    string responseText = await response.Content.ReadAsStringAsync();
+    Console.WriteLine(responseText);
+}
+async Task<string> getClients()
+{
+    StringContent content = new StringContent("allClients");
+    using var request = new HttpRequestMessage(HttpMethod.Get, "http://127.0.0.1:8888/connection/");
+    request.Content = content;
+    using var response = await httpClient.SendAsync(request);
+    string text = await response.Content.ReadAsStringAsync();
+    return text;
+}
+
 Client client = new Client()
 {
-    City = "ffdg",
-    Firstname="fgfd",
-    Surname="fdg",
-    Lastname="fgdg",
-    Company="fdgd",
+    City = "пвап",
+    Firstname="вппавпва",
+    Surname="рапрп",
+    Lastname="апрапр",
+    Company="парпар",
     Phone="67-67-56"
 };
-//string json = JsonSerializer.Serialize(client);
-JsonContent content = JsonContent.Create(client);
-//StringContent content = new StringContent(json);
-content.Headers.Add("table", "client");
-//using var request = new HttpRequestMessage(HttpMethod.Post, "http://127.0.0.1:8888/connection/");
-//request.Content = content;
+Task<string> res= getClients();
+Console.WriteLine(res.Result);
 
-using var response = await httpClient.PostAsync("http://127.0.0.1:8888/connection/",content);
-string responseText = await response.Content.ReadAsStringAsync();
-Console.WriteLine(responseText);
 
 class Client
 {
